@@ -25,8 +25,8 @@ ENV PATH $JAVA_HOME/bin:$PATH
 
 EXPOSE 8080
 
-ADD /assembly/assembly-main/target/eclipse-che-*/eclipse-che-* /home/user/che
-ENV CHE_HOME /home/user/che
-
-ENTRYPOINT [ "/home/user/che/bin/che.sh", "-c" ]
-CMD [ "run" ]
+#ADD /assembly/assembly-main/target/eclipse-che-*/eclipse-che-* /home/user/che
+#ENV CHE_HOME /home/user/che
+#
+#ENTRYPOINT [ "/home/user/che/bin/che.sh", "-c" ]
+#CMD [ "run" ]
