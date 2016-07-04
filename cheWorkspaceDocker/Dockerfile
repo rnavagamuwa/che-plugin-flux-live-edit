@@ -1,32 +1,49 @@
-FROM ubuntu
-RUN apt-get update && apt-get -y install curl sudo procps wget && \
-    echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
-    useradd -u 1000 -G users,sudo -d /home/user --shell /bin/bash -m user && \
-    echo "secret\nsecret" | passwd user && \
-    curl -sSL https://get.docker.com/ | sh && \
-    usermod -aG docker user && sudo apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+FROM codenvy/ubuntu_jdk8
 
-USER user
+RUN sudo apt-get update && \
+    sudo apt-get install -y git git-svn tig screen ack-grep tofrodos vim && \
+    sudo apt-get clean && \
+    sudo rm -rf /var/lib/apt/lists/*
 
-ENV JAVA_VERSION=8u65 \
-    JAVA_VERSION_PREFIX=1.8.0_65 \
-    CHE_LOCAL_CONF_DIR=/home/user/.che
+# Install docker client + configure remote docker engine (so launching che would work)
+#RUN sudo apt-get update && \
+#    sudo apt-get install apt-transport-https ca-certificates && \
+#    sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D && \
+#    sudo -E bash -c "echo \"deb https://apt.dockerproject.org/repo ubuntu-trusty main\" > /etc/apt/sources.list.d/docker.list"  && \
+#    sudo apt-get update && \
+#    sudo apt-get install -y docker-engine && \
+#    sudo apt-get clean && \
+#    sudo rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /home/user/.che && \
-    wget \
-   --no-cookies \
-   --no-check-certificate \
-   --header "Cookie: oraclelicense=accept-securebackup-cookie" \
-   -qO- \
-   "http://download.oracle.com/otn-pub/java/jdk/$JAVA_VERSION-b17/jre-$JAVA_VERSION-linux-x64.tar.gz" | sudo tar -zx -C /opt/
+RUN sudo apt-key update && \
+    sudo apt-get update
 
-ENV JAVA_HOME /opt/jre$JAVA_VERSION_PREFIX
-ENV PATH $JAVA_HOME/bin:$PATH
+#FLUX
+RUN sudo -E bash -c "echo \"deb http://www.rabbitmq.com/debian/ testing main\" >> /etc/apt/sources.list" && \
+    sudo wget https://www.rabbitmq.com/rabbitmq-signing-key-public.asc && \
+    sudo apt-key add rabbitmq-signing-key-public.asc && \
+    sudo apt-get update && \
+    sudo apt-get install -y --allow-unauthenticated rabbitmq-server nodejs-legacy npm && \
+    sudo apt-get clean && \
+    sudo rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8080
+EXPOSE 3000
+ENV CODENVY_APP_PORT_3000_HTTP 3000
 
-ADD /assembly/assembly-main/target/eclipse-che-*/eclipse-che-* /home/user/che
-ENV CHE_HOME /home/user/che
+WORKDIR /home/user/
+RUN wget https://github.com/eclipse/flux/archive/master.zip && \
+    unzip master.zip && \
+    rm master.zip
 
-ENTRYPOINT [ "/home/user/che/bin/che.sh", "-c" ]
-CMD [ "run" ]
+WORKDIR /home/user/flux-master/node.server
+RUN sudo npm install
+
+#ENV FLUX_GITHUB_CLIENT_ID 6a6df7a17754389d04b8
+#ENV FLUX_GITHUB_CLIENT_SECRET 64141f3ddae3ad719cf35c43bf728286193df0f5
+ENV VCAP_APP_HOST 0.0.0.0
+WORKDIR /home/user/flux-master
+RUN wget https://gist.githubusercontent.com/sunix/a9a1037e257da5d0a600/raw/3ff8a910f3400d19775bb562c89524518ac6f2d2/startup-all-in-one.js.patch
+RUN patch -p1 < startup-all-in-one.js.patch
+# WORKDIR /home/user/flux-master/node.server
+
+#CMD sudo service rabbitmq-server start && npm start
