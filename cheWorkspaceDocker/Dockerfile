@@ -1,25 +1,32 @@
-FROM codenvy/jdk8_maven3_tomcat8
-
-RUN sudo apt-get update
-RUN sudo apt-get -y install curl procps wget
-RUN sudo apt-get update
-RUN sudo apt-get install -y rabbitmq-server
-
-RUN sudo apt-get install -y nodejs-legacy npm
+FROM ubuntu
+RUN apt-get update && apt-get -y install curl sudo procps wget && \
+    echo "%sudo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    useradd -u 1000 -G users,sudo -d /home/user --shell /bin/bash -m user && \
+    echo "secret\nsecret" | passwd user && \
+    curl -sSL https://get.docker.com/ | sh && \
+    usermod -aG docker user && sudo apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 USER user
 
-WORKDIR /home/user/
-RUN wget https://github.com/rnavagamuwa/flux/archive/master.zip
-RUN unzip master.zip
+ENV JAVA_VERSION=8u65 \
+    JAVA_VERSION_PREFIX=1.8.0_65 \
+    CHE_LOCAL_CONF_DIR=/home/user/.che
 
-WORKDIR /home/user/flux-master/node.server
-RUN sudo npm install
+RUN mkdir /home/user/.che && \
+    wget \
+   --no-cookies \
+   --no-check-certificate \
+   --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+   -qO- \
+   "http://download.oracle.com/otn-pub/java/jdk/$JAVA_VERSION-b17/jre-$JAVA_VERSION-linux-x64.tar.gz" | sudo tar -zx -C /opt/
 
-ENV VCAP_APP_HOST 0.0.0.0
-WORKDIR /home/user/flux-master
-RUN wget https://gist.githubusercontent.com/sunix/a9a1037e257da5d0a600/raw/3ff8a910f3400d19775bb562c89524518ac6f2d2/startup-all-in-one.js.patch
-RUN patch -p1 < startup-all-in-one.js.patch
-WORKDIR /home/user/flux-master/node.server
+ENV JAVA_HOME /opt/jre$JAVA_VERSION_PREFIX
+ENV PATH $JAVA_HOME/bin:$PATH
 
-CMD sudo service rabbitmq-server start && npm start
+EXPOSE 8080
+
+ADD /assembly/assembly-main/target/eclipse-che-*/eclipse-che-* /home/user/che
+ENV CHE_HOME /home/user/che
+
+ENTRYPOINT [ "/home/user/che/bin/che.sh", "-c" ]
+CMD [ "run" ]
