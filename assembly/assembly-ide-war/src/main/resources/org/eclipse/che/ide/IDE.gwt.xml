@@ -67,6 +67,7 @@
     <inherits name='org.eclipse.che.plugin.docker.client.dto.Dto'/>
 
     <inherits name='org.eclipse.che.api.core.Core'/>
+    <inherits name='org.eclipse.che.api.core.model.Model'/>
     <inherits name='org.eclipse.che.api.machine.Machine'/>
     <inherits name='org.eclipse.che.api.git.Git'/>
     <inherits name='org.eclipse.che.api.project.Project'/>
@@ -78,6 +79,8 @@
     <inherits name="org.eclipse.che.api.ssh.Ssh"/>
 
     <inherits name="org.eclipse.che.plugin.svn.Subversion"/>
+    <inherits name="org.eclipse.che.ide.flux.liveedit.CheFluxLiveEditExtension"/>
+
     <inherits name="org.eclipse.che.ide.flux.liveedit.CheFluxLiveEditExtension"/>
 
     <stylesheet src="IDE.css"/>
