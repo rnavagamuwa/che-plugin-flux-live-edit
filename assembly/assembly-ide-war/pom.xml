@@ -102,7 +102,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.che.plugin</groupId>
-            <artifactId>che-plugin-flux-live-edit</artifactId>
+            <artifactId>che-plugin-flux-pair-programming</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.che.plugin</groupId>
