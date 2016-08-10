@@ -8,7 +8,7 @@
  * Contributors:
  *   Sun Seng David TAN <sunix@sunix.org> - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.ide.socketio;
+package org.eclipse.che.ide.pairprogramming.socketio;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.TextResource;

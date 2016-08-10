@@ -8,7 +8,7 @@
  * Contributors:
  *   Sun Seng David TAN <sunix@sunix.org> - initial API and implementation
  *******************************************************************************/
-package org.eclipse.che.ide.flux.liveedit;
+package org.eclipse.che.ide.pairprogramming.flux;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

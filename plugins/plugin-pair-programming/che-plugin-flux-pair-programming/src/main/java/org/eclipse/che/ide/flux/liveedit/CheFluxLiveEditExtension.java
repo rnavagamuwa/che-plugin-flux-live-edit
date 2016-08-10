@@ -128,14 +128,14 @@ public class CheFluxLiveEditExtension{
         this.editorAgent = editorAgent;
         this.notificationManager = notificationManager;
 
-        injectSocketIO();
-        injectCssStyles();
-
-        connectToFluxOnProjectLoaded();
-
-        connectToFluxOnFluxProcessStarted();
-
-        sendFluxMessageOnDocumentModelChanged();
+//        injectSocketIO();
+//        injectCssStyles();
+//
+//        connectToFluxOnProjectLoaded();
+//
+//        connectToFluxOnFluxProcessStarted();
+//
+//        sendFluxMessageOnDocumentModelChanged();
     }
 
 

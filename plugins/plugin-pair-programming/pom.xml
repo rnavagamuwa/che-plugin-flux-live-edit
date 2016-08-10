@@ -24,5 +24,6 @@
     <name>Che Plugin :: Pair Programming :: Parent</name>
     <modules>
         <module>che-plugin-flux-pair-programming</module>
+        <module>che-plugin-pair-programming-flux</module>
     </modules>
 </project>

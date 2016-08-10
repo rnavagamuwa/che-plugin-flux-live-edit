@@ -81,6 +81,7 @@
     <inherits name="org.eclipse.che.plugin.svn.Subversion"/>
 
     <inherits name="org.eclipse.che.ide.flux.liveedit.CheFluxLiveEditExtension"/>
+    <inherits name="org.eclipse.che.ide.pairprogramming.flux.FluxExtension"/>
 
     <stylesheet src="IDE.css"/>
 
